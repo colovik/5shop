@@ -1,0 +1,25 @@
+﻿@model _5shop.Models.AddToRoleViewModel
+@{
+    ViewBag.Title = "addUserToRole";
+}
+
+<h2>Додавање улоги на корисници</h2>
+
+@using (Html.BeginForm("addUserToRole", "Account"))
+{
+    <br />
+    <div class="form-group">
+        @Html.LabelFor(z => z.email)
+        @Html.DropDownListFor(z => z.email, new SelectList(Model.allEmails), "Select a user", new { @class = "form-control" })
+    </div>
+    <br />
+
+    <div class="form-group">
+        @Html.LabelFor(z=>z.roles)
+        @Html.DropDownListFor(z => z.selectedRole, new SelectList(Model.roles), "Select a role", new { @class = "form-control" })
+
+    </div>
+    <br />
+    <button type="submit" class="btn btn-outline-dark">Додади</button>
+}
+

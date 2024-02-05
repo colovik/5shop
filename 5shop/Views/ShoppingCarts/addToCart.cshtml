@@ -1,0 +1,48 @@
+﻿@model _5shop.Models.ShoppingCartItemViewModel
+
+<h2>Активна кошничка</h2>
+
+<table class="table">
+    <thead>
+    <th>Product Image</th>
+    <th>Product Name</th>
+    <th>Price</th>
+    <th>Selected quantity</th>
+    <th>Total Item Price</th>
+    <th>Total Cart Price</th>
+    </thead>
+    <tbody>
+        <tr>
+            <td><img src="@Model.ProductImageUrl" alt="Product Image" style="max-width: 50px;" /></td>
+            <td>@Model.ProductName</td>
+            <td>@Model.ProductPrice</td>
+            <td>
+                <button class="quantity-button rounded-pill" onclick="decrementQuantity(this)">-</button>
+                <input type="text" class="quantity-input rounded-pill" value="1" min="1" />
+                <button class="quantity-button  rounded-pill" onclick="incrementQuantity(this)">+</button>
+            </td>
+            <td>@Model.TotalItemPrice</td>
+            <td>@Model.TotalCartPrice</td>
+        </tr>
+    </tbody>
+</table>
+
+<button class="btn btn-primary" onclick="location.href='/Products/Index'">Назад кон листата со производи</button>
+
+<script>
+    function decrementQuantity(button) {
+        var input = $(button).siblings('.quantity-input');
+        var value = parseInt(input.val(), 10);
+
+        if (value > 1) {
+            input.val(value - 1);
+        }
+    }
+
+    function incrementQuantity(button) {
+        var input = $(button).siblings('.quantity-input');
+        var value = parseInt(input.val(), 10);
+
+        input.val(value + 1);
+    }
+</script>

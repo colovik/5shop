@@ -1,0 +1,66 @@
+﻿body {
+    background-image: url(../Resources/background.jpg);
+    background-attachment: fixed;
+    background-position: center center;
+    background-size: cover;
+}
+
+button > a {
+    color: white;
+    text-decoration: none;
+}
+
+#lead {
+    font-size: smaller;
+    font-style: italic;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+thead {
+    background-color: black;
+    color: white;
+}
+
+th:first-child {
+    border-top-left-radius: 15px;
+}
+
+th:last-child {
+    border-top-right-radius: 15px;
+}
+
+.table tbody {
+    background-color: rgba(255,255,255,0.5);
+}
+
+a {
+    color: dimgrey;
+    font-weight: 500;
+}
+
+a:hover {
+    color: lightslategrey;
+}
+
+button#filterButton {
+    width: fit-content;
+    background-color: deeppink;
+    border-color: deeppink;
+    margin-left: 30px;
+    font-weight: bold;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.quantity-input {
+    max-width: 50px;
+    text-align: center;
+}
+
+.quantity-button{
+
+}

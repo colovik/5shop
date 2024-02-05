@@ -1,0 +1,74 @@
+﻿@model _5shop.Models.Product
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Детали за производот </h2>
+<hr />
+
+<div class="row">
+    <div class="col-6">
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.name)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.name)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.quantity)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.quantity)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.price)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.price)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.description)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.description)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.category)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.category)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.animal)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.animal)
+            </dd>
+
+        </dl>
+    </div>
+    <div class="col-6 d-flex">
+        <img src="@Model.imageUrl" class="justify-content-center align-items-center" style="max-width: 400px" />
+    </div>
+</div>
+
+<p>
+    @if (User.IsInRole(_5shop.Models.Role.ADMIN.ToString()))
+    {
+        @Html.ActionLink("Промени", "Edit", new { id = Model.id }, new { @class = "color: black;" })
+    }
+    @Html.ActionLink("Назад кон листата", "Index", new { @class = "color: black;" })
+</p>
