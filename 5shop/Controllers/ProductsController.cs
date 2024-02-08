@@ -37,15 +37,13 @@ namespace _5shop.Controllers
 
             // Fetch the user's shopping cart ID
             var userName = User.Identity.GetUserName(); // Assuming you are using ASP.NET Identity
-            var cart = db.shoppingCarts.FirstOrDefault(c => c.username == userName) ?? new ShoppingCart();
 
-            // Create your view model and pass the cartId
-            var model = new ProductsCategoriesAnimalsViewModel
+            // Create your view model and pass the userName
+            var model = new ProductsCategoriesAnimalsViewModel(userName)
             {
                 animals = animals.ToList(),
                 categories = categories.ToList(),
-                products = products,
-                cartId = cart.id
+                products = products
             };
 
             return View(model);
@@ -159,11 +157,5 @@ namespace _5shop.Controllers
             }
             base.Dispose(disposing);
         }
-
-        //[Authorize(Roles = "USER")]
-        //public ActionResult addToCart()
-        //{
-        //    return View();
-        //}
     }
 }

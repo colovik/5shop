@@ -20,7 +20,8 @@ namespace _5shop
                         "~/Scripts/modernizr-*"));
 
             bundles.Add(new Bundle("~/bundles/bootstrap").Include(
-                      "~/Scripts/bootstrap.js"));
+                      "~/Scripts/bootstrap.js",
+                      "~/Scripts/bootbox.js")); 
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
@@ -28,8 +29,7 @@ namespace _5shop
                       "~/Content/HomeStyleSheet.css"));
 
             bundles.Add(new ScriptBundle("~/bundles/popper").Include(
-                    "~/Scripts/umd/popper.min.js"));
-
+                   "~/Scripts/umd/popper.min.js"));
         }
     }
 }

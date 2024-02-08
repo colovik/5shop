@@ -34,7 +34,7 @@
     <OutputPath>bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <WarningLevel>0</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -172,6 +172,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
+    <Compile Include="Controllers\ShoppingCartsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -199,6 +200,22 @@
     <Compile Include="Migrations\202402051653398_updatedModels.designer.cs">
       <DependentUpon>202402051653398_updatedModels.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202402052331016_changedModels.cs" />
+    <Compile Include="Migrations\202402052331016_changedModels.designer.cs">
+      <DependentUpon>202402052331016_changedModels.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202402060815073_updatedModels1.cs" />
+    <Compile Include="Migrations\202402060815073_updatedModels1.designer.cs">
+      <DependentUpon>202402060815073_updatedModels1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202402060837313_addedManyToManyTableForProductsAndShoppingCarts.cs" />
+    <Compile Include="Migrations\202402060837313_addedManyToManyTableForProductsAndShoppingCarts.designer.cs">
+      <DependentUpon>202402060837313_addedManyToManyTableForProductsAndShoppingCarts.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202402060857313_addedShoppingCartItemViewModel.cs" />
+    <Compile Include="Migrations\202402060857313_addedShoppingCartItemViewModel.designer.cs">
+      <DependentUpon>202402060857313_addedShoppingCartItemViewModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AddToRoleViewModel.cs" />
@@ -210,6 +227,7 @@
     <Compile Include="Models\ProductsCategoriesAnimalsViewModel.cs" />
     <Compile Include="Models\Role.cs" />
     <Compile Include="Models\ShoppingCart.cs" />
+    <Compile Include="Models\ShoppingCartStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -237,6 +255,8 @@
     <Content Include="Resources\background.jpg" />
     <Content Include="Resources\logo-removebg-preview.png" />
     <Content Include="Resources\logo.png" />
+    <Content Include="Scripts\bootbox.js" />
+    <Content Include="Scripts\bootbox.min.js" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
@@ -254,6 +274,12 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Views\ShoppingCarts\addToCart.cshtml" />
+    <Content Include="Views\ShoppingCarts\Create.cshtml" />
+    <Content Include="Views\ShoppingCarts\Delete.cshtml" />
+    <Content Include="Views\ShoppingCarts\Details.cshtml" />
+    <Content Include="Views\ShoppingCarts\Edit.cshtml" />
+    <Content Include="Views\ShoppingCarts\Index.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -294,6 +320,7 @@
     <Content Include="Views\Products\Edit.cshtml" />
     <Content Include="Views\Products\Index.cshtml" />
     <Content Include="Views\Account\addUserToRole.cshtml" />
+    <Content Include="Views\ShoppingCarts\orderConfirmation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -343,6 +370,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202402051653398_updatedModels.resx">
       <DependentUpon>202402051653398_updatedModels.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202402052331016_changedModels.resx">
+      <DependentUpon>202402052331016_changedModels.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202402060815073_updatedModels1.resx">
+      <DependentUpon>202402060815073_updatedModels1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202402060837313_addedManyToManyTableForProductsAndShoppingCarts.resx">
+      <DependentUpon>202402060837313_addedManyToManyTableForProductsAndShoppingCarts.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202402060857313_addedShoppingCartItemViewModel.resx">
+      <DependentUpon>202402060857313_addedShoppingCartItemViewModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

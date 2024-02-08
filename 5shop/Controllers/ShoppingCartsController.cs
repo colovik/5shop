@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -115,37 +116,6 @@ namespace _5shop.Controllers
             return RedirectToAction("Index");
         }
 
-        //public ActionResult addToCart(int cartId, int productId/*, int quantity*/)
-        //{
-        //    // kosnicka na korisnikot sho e najaven ili prazna kosnicka
-        //    var cart = db.shoppingCarts.Find(cartId) ?? new ShoppingCart();
-
-        //    //go naogja proizvodot kaj sho sum kliknala po id sho go prakjam so javascript
-        //    var product = db.products.FirstOrDefault(p => p.id == productId);
-
-        //    //vo kolickata go dodavam proizvodot
-        //    cart.products.Add(product);
-        //    cart.prices.Add(product.price);
-        //    //cart.quantities.Add(quantity);
-        //    //cart.totalIndividuals.Add(quantity * product.price);
-        //    //cart.total += quantity * product.price;
-
-        //    ShoppingCartItemViewModel model = new ShoppingCartItemViewModel();
-        //    model.ProductPrice = product.price;
-        //    model.ProductName = product.name;
-        //    model.ProductImageUrl = product.imageUrl;
-        //    //model.SelectedQuantity = quantity;
-        //    //model.TotalItemPrice = quantity * product.price;
-        //    //model.TotalCartPrice = cart.total + (quantity * product.price);
-
-        //    // Redirect to the ShoppingCart view or action
-        //    return View(model);
-        //}
-
-        //public ActionResult getShoppingCart(ShoppingCartItemViewModel model)
-        //{
-        //    return View(model);
-        //}
 
         protected override void Dispose(bool disposing)
         {
@@ -155,6 +125,129 @@ namespace _5shop.Controllers
             }
             base.Dispose(disposing);
         }
+
+        [Authorize]
+        public ActionResult addToCart(int? cartId, string? productName)
+        {
+            var shoppingCart = Session["ShoppingCart"] as ShoppingCart;
+            var sessionUser = Session["User"];
+            var user = User.Identity.Name;
+
+            // If the session shopping cart is not available, check the database
+            if (shoppingCart == null || !user.Equals(sessionUser))
+            {
+                // Retrieve the current shopping cart from the database based on the user
+                shoppingCart = db.shoppingCarts.FirstOrDefault(c => //c.id == cartId &&
+                                                                     c.status == ShoppingCartStatus.CREATED &&
+                                                                     c.username == User.Identity.Name);
+
+                // If the shopping cart doesn't exist in the database, create a new one
+                if (shoppingCart == null)
+                {
+                    shoppingCart = new ShoppingCart
+                    {
+                        username = User.Identity.Name,
+                    };
+
+                    db.shoppingCarts.Add(shoppingCart);
+                    db.SaveChanges();
+                }
+
+                Session["ShoppingCart"] = shoppingCart;
+            }
+
+            if (productName != null)
+            {
+                productName = productName.Replace("\n", "").Trim();
+                var product = db.products.FirstOrDefault(z => z.name == productName);
+
+                if (product != null)
+                {
+                    shoppingCart.products.Add(product);
+                    db.SaveChanges();
+                }
+            }
+            Session["User"] = user;
+
+            return View(shoppingCart);
+        }
+
+        //public ActionResult buy(int cartId)
+        //{
+        //    return RedirectToAction("buy");
+        //}
+
+        [HttpPost]
+        public ActionResult buy(int cartId, List<int> products, List<int> quantities, List<int> totalIndividuals)
+        {
+            // Fetch the shopping cart with eager loading
+            var shoppingCart = db.shoppingCarts
+                //.Include(sc => sc.products)
+                .FirstOrDefault(sc => sc.id == cartId);
+
+            var totalSum = 0;
+
+            for (int i = 0; i < products.Count; i++)
+            {
+                var productId = products[i];
+                var product = db.products.Find(productId);
+
+                if (product != null)
+                {
+                    var quantity = quantities[i];
+                    var t = totalIndividuals[i];
+
+                    //gi zacuvuvam vo kosnickata (istorija) pred da ja namalam vrednosta vo baza
+                    shoppingCart.products.Add(product);
+                    shoppingCart.quantities.Add(quantity);
+                    shoppingCart.totalIndividuals.Add(t);
+
+                    product.quantity -= quantity;
+                    totalSum += t;
+                }
+            }
+
+            // Update shopping cart totals and status
+            shoppingCart.total = totalSum;
+            shoppingCart.status = ShoppingCartStatus.FINISHED;
+
+            // Save changes to the database
+            db.SaveChanges();
+
+            return RedirectToAction("orderConfirmation");
+        }
+
+        public ActionResult orderConfirmation()
+        {
+            Debug.WriteLine("Entering orderConfirmation action.");
+
+            Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            Response.Cache.SetNoStore();
+
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult removeProduct(int productId)
+        {
+            var shoppingCart = Session["ShoppingCart"] as ShoppingCart;
+
+            if (shoppingCart != null)
+            {
+                var idProductToRemove = shoppingCart.products.FirstOrDefault(p => p.id == productId);
+
+                if (idProductToRemove != null)
+                {
+                    shoppingCart.products.Remove(idProductToRemove);
+                    Session["ShoppingCart"] = shoppingCart;
+                    db.SaveChanges();
+                }
+            }
+
+            return RedirectToAction("addToCart");
+        }
+
+
     }
 }
 

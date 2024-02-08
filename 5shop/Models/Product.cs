@@ -32,5 +32,11 @@ namespace _5shop.Models
         [Required]
         [Display(Name = "Животно")]
         public virtual Animal? animal { get; set; }
+
+        public virtual List<ShoppingCart> shoppingCarts { get; set; }
+
+        public Product() { 
+            shoppingCarts = new List<ShoppingCart>();
+        }
     }
 }

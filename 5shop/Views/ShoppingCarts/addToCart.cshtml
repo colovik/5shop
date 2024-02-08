@@ -1,48 +1,189 @@
-﻿@model _5shop.Models.ShoppingCartItemViewModel
+﻿@model _5shop.Models.ShoppingCart
+
+@{
+    ViewBag.Title = "Shopping Cart";
+}
 
 <h2>Активна кошничка</h2>
-
+<h5>CartId: @Model.id</h5>
 <table class="table">
     <thead>
-    <th>Product Image</th>
-    <th>Product Name</th>
-    <th>Price</th>
-    <th>Selected quantity</th>
-    <th>Total Item Price</th>
-    <th>Total Cart Price</th>
+        <tr>
+            <th></th>
+            <th>Производ</th>
+            <th>Цена</th>
+            <th>Количина</th>
+            <th>Вкупна цена на производот</th>
+            <th>Избриши производ?</th>
+        </tr>
     </thead>
     <tbody>
-        <tr>
-            <td><img src="@Model.ProductImageUrl" alt="Product Image" style="max-width: 50px;" /></td>
-            <td>@Model.ProductName</td>
-            <td>@Model.ProductPrice</td>
-            <td>
-                <button class="quantity-button rounded-pill" onclick="decrementQuantity(this)">-</button>
-                <input type="text" class="quantity-input rounded-pill" value="1" min="1" />
-                <button class="quantity-button  rounded-pill" onclick="incrementQuantity(this)">+</button>
-            </td>
-            <td>@Model.TotalItemPrice</td>
-            <td>@Model.TotalCartPrice</td>
-        </tr>
+        @foreach (var i in Enumerable.Range(0, Model.products.Count))
+        {
+            <tr>
+                <td>
+                    <img src="@Model.products[i].imageUrl" alt="Product Image" class="img-thumbnail" style="width: 50px; height: 50px;" />
+                </td>
+                <td>@Model.products[i].name</td>
+                <td>@Model.products[i].price</td>
+                <td>
+                    <div class="input-group">
+                        <div>
+                            <button class="btn btn-outline-secondary btn-decrease" type="button">-</button>
+                        </div>
+                        <input type="text" class="form-control quantity-input" value="1" min="1" />
+                        <div>
+                            <button class="btn btn-outline-secondary btn-increase" type="button">+</button>
+                        </div>
+                    </div>
+                    <input type="hidden" class="max-quantity" value="@Model.products[i].quantity" />
+                </td>
+                <td class="individual-total">@Model.products[i].price</td>
+                <td>
+                    <button class="btn btn-danger btn-delete" type="button" data-product-id="@Model.products[i].id">Delete</button>
+                </td>
+            </tr>
+
+        }
     </tbody>
 </table>
 
-<button class="btn btn-primary" onclick="location.href='/Products/Index'">Назад кон листата со производи</button>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-1 text-end"><strong>Вкупно: </strong></div>
+        <strong>
+            <div class="col-2" id="overall-total"></div>
+        </strong>
+        <div class="col-9 text-start">мкд.</div>
+
+    </div>
+</div>
+<div>
+    <button class="btn btn-outline-dark">
+        @Html.ActionLink("Назад кон листата со производи", "Index", "Products")
+    </button>
+    <button id="btnBuy" class="btn btn-success">Купи</button>
+</div>
 
 <script>
-    function decrementQuantity(button) {
-        var input = $(button).siblings('.quantity-input');
-        var value = parseInt(input.val(), 10);
+    $(document).ready(function () {
 
-        if (value > 1) {
-            input.val(value - 1);
-        }
-    }
+        $('tbody tr').each(function () {
+            updateTotals($(this));
+        });
 
-    function incrementQuantity(button) {
-        var input = $(button).siblings('.quantity-input');
-        var value = parseInt(input.val(), 10);
+        // Function to update individual total and overall total
+        function updateTotals(row) {
+            // Find the quantity input, individual total, and overall total elements
+            var quantityInput = row.find('.quantity-input');
+            var individualTotal = row.find('.individual-total');
+            var overallTotal = $('#overall-total');
 
-        input.val(value + 1);
-    }
+            // Get the price and quantity values
+            var price = parseFloat(row.find('td:eq(2)').text());
+            var quantity = parseInt(quantityInput.val());
+
+            // Update individual total
+            var newIndividualTotal = price * quantity;
+            individualTotal.text(newIndividualTotal);
+
+            // Update overall total
+            var newOverallTotal = 0;
+            $('.individual-total').each(function () {
+                newOverallTotal += parseFloat($(this).text());
+            });
+            overallTotal.text(newOverallTotal);
+        };
+
+        // Event handler for decreasing quantity
+        $('.btn-decrease').on('click', function () {
+            var row = $(this).closest('tr');
+            var quantityInput = row.find('.quantity-input');
+            var quantity = parseInt(quantityInput.val());
+
+            if (quantity > 1) {
+                quantityInput.val(quantity - 1);
+                updateTotals(row);
+            }
+        });
+
+        // Event handler for increasing quantity
+        $('.btn-increase').on('click', function () {
+            var row = $(this).closest('tr');
+            var quantityInput = row.find('.quantity-input');
+            var quantity = parseInt(quantityInput.val());
+
+            // Check if increasing quantity would exceed product quantity
+            var maxQuantity = parseInt(row.find('.max-quantity').val());
+
+            if (quantity < maxQuantity) {
+                quantityInput.val(quantity + 1);
+                updateTotals(row);
+            } else {
+                alert('Cannot exceed product quantity.');
+            }
+        });
+
+        // Event handler for delete button with bootbox confirmation
+        $('.btn-delete').on('click', function () {
+            var row = $(this).closest('tr');
+            var productId = $(this).closest('button').data('product-id');
+
+            bootbox.confirm("Дали сигурно сакаш да го избришеш производот од кошничката?", function (result) {
+                if (result) {
+                    row.remove();
+                    updateTotals(row);
+
+                    $.ajax({
+                        url: '/ShoppingCarts/removeProduct',
+                        type: 'POST',
+                        data: { productId: productId }
+                    });
+                }
+            });
+        });
+
+        // Event handler for Buy button
+        $('#btnBuy').on('click', function () {
+            bootbox.confirm("Дали ја потврдуваш нарачката?", function (result) {
+                if (result) {
+                    var cId = @Model.id;
+                    var products = [];
+                    var quantities = [];
+                    var totalIndividuals = [];
+
+                    // Iterate through each row to extract product, quantity, price, and total individual price information
+                    $('tbody tr').each(function () {
+                        var productId = $(this).find('.btn-delete').data('product-id');
+                        var quantity = parseInt($(this).find('.quantity-input').val());
+                        var totalIndividual = parseInt($(this).find('.individual-total').text());
+
+                        products.push(productId);
+                        quantities.push(quantity);
+                        totalIndividuals.push(totalIndividual);
+                    });
+
+                    var table = $(this).closest('table');
+                    // Make the AJAX request
+                    $.ajax({
+                        url: '/ShoppingCarts/buy',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({
+                            cartId: cId,
+                            products: products,
+                            quantities: quantities,
+                            totalIndividuals: totalIndividuals
+                        }),
+                        success: function (data) {
+                            table.remove();
+                        }
+                    });
+                }
+            });
+        });
+
+
+    });
 </script>
+

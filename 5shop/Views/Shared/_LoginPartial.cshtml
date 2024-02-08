@@ -3,20 +3,27 @@
 {
     using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
     {
-    @Html.AntiForgeryToken()
+        @Html.AntiForgeryToken()
 
-    <ul class="navbar-nav navbar-right">
-        <li>
-            @Html.ActionLink(User.Identity.GetUserName(), "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage", @class="nav-link" })
-        </li>
-        <li><a class="nav-link" href="javascript:document.getElementById('logoutForm').submit()">Одјави се</a></li>
-    </ul>
+        <ul class="navbar-nav navbar-right">
+            <li>
+
+                @if (User.IsInRole("USER"))
+                {
+                    @Html.ActionLink("Кошничка", "addToCart", "ShoppingCarts", new { area = "" }, new { @class = "nav-link" })
+                }
+            </li>
+            <li>
+                @Html.ActionLink(User.Identity.GetUserName(), "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage", @class = "nav-link" })
+            </li>
+            <li><a class="nav-link" href="javascript:document.getElementById('logoutForm').submit()">Одјави се</a></li>
+        </ul>
     }
 }
 else
 {
-<ul class="navbar-nav navbar-right">
-    <li>@Html.ActionLink("Најава", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink", @class = "nav-link" })</li>
-    <li>@Html.ActionLink("Регистрација", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink", @class = "nav-link" })</li>
-</ul>
+    <ul class="navbar-nav navbar-right">
+        <li>@Html.ActionLink("Најава", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink", @class = "nav-link" })</li>
+        <li>@Html.ActionLink("Регистрација", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink", @class = "nav-link" })</li>
+    </ul>
 }

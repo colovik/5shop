@@ -3,6 +3,7 @@
 @{
     ViewBag.Title = "Index";
 }
+<p>Cart ID: @Model.cartId</p>
 
 <div class="row">
     <div class="col-3 d-flex flex-column">
@@ -44,9 +45,6 @@
     <th>
         @Html.DisplayNameFor(model => model.products.First().name)
     </th>
-    @*<th>
-            @Html.DisplayNameFor(model => model.products.First().quantity)
-        </th>*@
     <th>
         @Html.DisplayNameFor(model => model.products.First().price)
     </th>
@@ -90,14 +88,8 @@
 
                     @if (User.IsInRole(_5shop.Models.Role.USER.ToString()))
                     {
-                        @*@Html.Label("|")*@
-                    <!--<div class="quantity-container">
-                        <a class="quantity-button rounded-pill" onclick="addToCart(item.id)">Додади во кошничка</a>
-                        //Html.ActionLink("Додади во кошничка", "addToCart", "ShoppingCarts", new { cartId = User.Cart.id, productId = item.id}, new {onclick = "addToCart(this);" })
-                        <button class="quantity-button rounded-pill" onclick="decrementQuantity(this)">-</button>
-                        <input type="text" class="quantity-input rounded-pill" value="1" min="1" />
-                        <button class="quantity-button  rounded-pill" onclick="incrementQuantity(this)">+</button>
-                    </div>-->
+                        @Html.Label("|")
+                        @Html.ActionLink(" Додади во кошничка", "addToCart", "ShoppingCarts", new { cartId = Model.cartId, productName = item.name }, null)
                     }
                 </td>
             </tr>
@@ -107,6 +99,7 @@
 
 <script>
     $(document).ready(function () {
+
         function filterProducts() {
             var categoryFilter = $("#categoryFilter").val();
             var animalFilter = $("#animalFilter").val();
@@ -115,36 +108,4 @@
 
         $("#filterButton").on("click", filterProducts);
     });
-
-    //function decrementQuantity(button) {
-    //    var input = $(button).siblings('.quantity-input');
-    //    var value = parseInt(input.val(), 10);
-
-    //    if (value > 1) {
-    //        input.val(value - 1);
-    //    }
-    //}
-
-    //function incrementQuantity(button) {
-    //    var input = $(button).siblings('.quantity-input');
-    //    var value = parseInt(input.val(), 10);
-
-    //    input.val(value + 1);
-    //}
-
-    //function addToCart(link) {
-    //    var quantity = $(link).siblings('.quantity-container').find('.quantity-input').val();
-    //    var productId = $(link).data('id'); // Assuming you set data-id on the link
-
-    //    // Get cartId from the data attribute
-    //    var cartId = $(link).closest('.quantity-container').data('cart-id');
-
-    //    // Send an AJAX request to the server to add the product to the cart
-    //    $.ajax({
-    //        url: "/ShoppingCarts/addToCart",
-    //        method: "POST",
-    //        data: { cartId: cartId, productId: productId, quantity: quantity }
-    //    });
-    //}
-
 </script>
