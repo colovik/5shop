@@ -81,39 +81,11 @@
 }
 
 <div>
-    @Html.ActionLink("Назад кон листата", "Index", new { @class = "color: black;" })
+    <button class="btn btn-outline-dark">
+        @Html.ActionLink("Назад кон листата", "Index", new { @class = "color: black;" })
+    </button>
 </div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
-
-    @*<script>
-            $(document).ready(function () {
-                // Function to add a new image input field
-                function addImageField(index) {
-                    var container = $("#imageUrlsContainer");
-
-                    var newImageUrlField = $("<br/> <div class='image-url-container'>" +
-                        "<input type='text' name='images[" + index + "]' value='' class='form-control' />" +
-                        "<button type='button' class='delete-button btn btn-danger'>Избриши</button>" +
-                        "</div>");
-
-                    container.append(newImageUrlField);
-                }
-
-                // Add image URL field when the page loads
-                addImageField(1); // Assuming 0 as the initial index
-
-                // Add image URL field when the "Add Image" button is clicked
-                $("#addImageButton").on("click", function () {
-                    var newIndex = $(".image-url-container").length;
-                    addImageField(newIndex);
-                });
-
-                // Delete image URL field
-                $("#imageUrlsContainer").on("click", ".delete-button", function () {
-                    $(this).parent().remove();
-                });
-            });
-        </script>*@
 }

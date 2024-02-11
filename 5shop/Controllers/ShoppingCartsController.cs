@@ -133,15 +133,10 @@ namespace _5shop.Controllers
             var sessionUser = Session["User"];
             var user = User.Identity.Name;
 
-            // If the session shopping cart is not available, check the database
             if (shoppingCart == null || !user.Equals(sessionUser))
             {
-                // Retrieve the current shopping cart from the database based on the user
-                shoppingCart = db.shoppingCarts.FirstOrDefault(c => //c.id == cartId &&
-                                                                     c.status == ShoppingCartStatus.CREATED &&
-                                                                     c.username == User.Identity.Name);
+                shoppingCart = db.shoppingCarts.FirstOrDefault(c => c.status == ShoppingCartStatus.CREATED && c.username == User.Identity.Name);
 
-                // If the shopping cart doesn't exist in the database, create a new one
                 if (shoppingCart == null)
                 {
                     shoppingCart = new ShoppingCart
@@ -172,59 +167,45 @@ namespace _5shop.Controllers
             return View(shoppingCart);
         }
 
-        //public ActionResult buy(int cartId)
-        //{
-        //    return RedirectToAction("buy");
-        //}
-
         [HttpPost]
-        public ActionResult buy(int cartId, List<int> products, List<int> quantities, List<int> totalIndividuals)
+        public ActionResult buy(int cartId, List<int>? products, List<int>? quantities, List<int>? totalIndividuals)
         {
-            // Fetch the shopping cart with eager loading
             var shoppingCart = db.shoppingCarts
-                //.Include(sc => sc.products)
                 .FirstOrDefault(sc => sc.id == cartId);
 
-            var totalSum = 0;
-
-            for (int i = 0; i < products.Count; i++)
+            if (shoppingCart != null)
             {
-                var productId = products[i];
-                var product = db.products.Find(productId);
+                var totalSum = 0;
 
-                if (product != null)
+                for (int i = 0; i < products.Count; i++)
                 {
-                    var quantity = quantities[i];
-                    var t = totalIndividuals[i];
+                    var productId = products[i];
+                    var product = db.products.Find(productId);
 
-                    //gi zacuvuvam vo kosnickata (istorija) pred da ja namalam vrednosta vo baza
-                    shoppingCart.products.Add(product);
-                    shoppingCart.quantities.Add(quantity);
-                    shoppingCart.totalIndividuals.Add(t);
+                    if (product != null)
+                    {
+                        var quantity = quantities[i];
+                        var t = totalIndividuals[i];
 
-                    product.quantity -= quantity;
-                    totalSum += t;
+                        //shoppingCart.products.Add(product);
+                        shoppingCart.quantities.Add(quantity);
+                        shoppingCart.totalIndividuals.Add(t);
+
+                        product.quantity -= quantity;
+
+                        totalSum += t;
+                    }
                 }
+
+                shoppingCart.total = totalSum;
+                shoppingCart.status = ShoppingCartStatus.FINISHED;
+                shoppingCart.dateCreated = DateTime.Now;
+                
+                db.SaveChanges();
+                Session["ShoppingCart"] = null;
             }
 
-            // Update shopping cart totals and status
-            shoppingCart.total = totalSum;
-            shoppingCart.status = ShoppingCartStatus.FINISHED;
-
-            // Save changes to the database
-            db.SaveChanges();
-
-            return RedirectToAction("orderConfirmation");
-        }
-
-        public ActionResult orderConfirmation()
-        {
-            Debug.WriteLine("Entering orderConfirmation action.");
-
-            Response.Cache.SetCacheability(HttpCacheability.NoCache);
-            Response.Cache.SetNoStore();
-
-            return View();
+            return RedirectToAction("addToCart");
         }
 
         [HttpPost]
@@ -245,6 +226,26 @@ namespace _5shop.Controllers
             }
 
             return RedirectToAction("addToCart");
+        }
+
+        public ActionResult orderHistory()
+        {
+            var activeUser = User.Identity.Name;
+            var userCarts = db.shoppingCarts.Include(sc => sc.products).Where(sc=> sc.username == activeUser && sc.status == ShoppingCartStatus.FINISHED).ToList();
+
+            return View(userCarts);
+        }
+
+        public ActionResult moreDetails(int cartId)
+        {
+            var cart = db.shoppingCarts.Include(sc => sc.products).FirstOrDefault(sc => sc.id == cartId);
+            var products = db.shoppingCarts.FirstOrDefault(sc=>sc.id==cartId).products;
+            var model = new MoreDetailsViewModel
+            {
+                shoppingCart = cart,
+                products = products
+            };
+            return View(model);
         }
 
 

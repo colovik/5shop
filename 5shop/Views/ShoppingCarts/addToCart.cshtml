@@ -5,7 +5,8 @@
 }
 
 <h2>Активна кошничка</h2>
-<h5>CartId: @Model.id</h5>
+@*<h5>CartId: @Model.id</h5>*@
+<br />
 <table class="table">
     <thead>
         <tr>
@@ -40,7 +41,7 @@
                 </td>
                 <td class="individual-total">@Model.products[i].price</td>
                 <td>
-                    <button class="btn btn-danger btn-delete" type="button" data-product-id="@Model.products[i].id">Delete</button>
+                    <button class="btn btn-danger btn-delete" type="button" data-product-id="@Model.products[i].id">Избриши</button>
                 </td>
             </tr>
 
@@ -49,15 +50,16 @@
 </table>
 
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-1 text-end"><strong>Вкупно: </strong></div>
-        <strong>
-            <div class="col-2" id="overall-total"></div>
-        </strong>
+    <div class="row fs-2">
+        <div class="col-1">Вкупно:     </div>
+        <strong class="col-2 text-end" id="overall-total" value="0"></strong>
         <div class="col-9 text-start">мкд.</div>
-
     </div>
 </div>
+
+
+<div id="orderConfirmationMessage" class="mt-3 fw-bold fs-4"></div>
+
 <div>
     <button class="btn btn-outline-dark">
         @Html.ActionLink("Назад кон листата со производи", "Index", "Products")
@@ -72,22 +74,17 @@
             updateTotals($(this));
         });
 
-        // Function to update individual total and overall total
         function updateTotals(row) {
-            // Find the quantity input, individual total, and overall total elements
             var quantityInput = row.find('.quantity-input');
             var individualTotal = row.find('.individual-total');
             var overallTotal = $('#overall-total');
 
-            // Get the price and quantity values
             var price = parseFloat(row.find('td:eq(2)').text());
             var quantity = parseInt(quantityInput.val());
 
-            // Update individual total
             var newIndividualTotal = price * quantity;
             individualTotal.text(newIndividualTotal);
 
-            // Update overall total
             var newOverallTotal = 0;
             $('.individual-total').each(function () {
                 newOverallTotal += parseFloat($(this).text());
@@ -95,7 +92,6 @@
             overallTotal.text(newOverallTotal);
         };
 
-        // Event handler for decreasing quantity
         $('.btn-decrease').on('click', function () {
             var row = $(this).closest('tr');
             var quantityInput = row.find('.quantity-input');
@@ -107,24 +103,21 @@
             }
         });
 
-        // Event handler for increasing quantity
         $('.btn-increase').on('click', function () {
             var row = $(this).closest('tr');
             var quantityInput = row.find('.quantity-input');
             var quantity = parseInt(quantityInput.val());
 
-            // Check if increasing quantity would exceed product quantity
             var maxQuantity = parseInt(row.find('.max-quantity').val());
 
             if (quantity < maxQuantity) {
                 quantityInput.val(quantity + 1);
                 updateTotals(row);
             } else {
-                alert('Cannot exceed product quantity.');
+                alert('Достигната е максималната количина на залиха');
             }
         });
 
-        // Event handler for delete button with bootbox confirmation
         $('.btn-delete').on('click', function () {
             var row = $(this).closest('tr');
             var productId = $(this).closest('button').data('product-id');
@@ -143,7 +136,6 @@
             });
         });
 
-        // Event handler for Buy button
         $('#btnBuy').on('click', function () {
             bootbox.confirm("Дали ја потврдуваш нарачката?", function (result) {
                 if (result) {
@@ -152,7 +144,6 @@
                     var quantities = [];
                     var totalIndividuals = [];
 
-                    // Iterate through each row to extract product, quantity, price, and total individual price information
                     $('tbody tr').each(function () {
                         var productId = $(this).find('.btn-delete').data('product-id');
                         var quantity = parseInt($(this).find('.quantity-input').val());
@@ -164,7 +155,6 @@
                     });
 
                     var table = $(this).closest('table');
-                    // Make the AJAX request
                     $.ajax({
                         url: '/ShoppingCarts/buy',
                         type: 'POST',
@@ -175,15 +165,18 @@
                             quantities: quantities,
                             totalIndividuals: totalIndividuals
                         }),
-                        success: function (data) {
-                            table.remove();
+                        success: function () {
+                            $('tbody').empty();
+
+                            $('#overall-total').text(0);
+
+                            var confirmationMessage = "Вашата нарачка е успешно потврдена!";
+                            $('#orderConfirmationMessage').text(confirmationMessage);
                         }
                     });
                 }
-            });
+            })
         });
-
-
-    });
+    })
 </script>
 

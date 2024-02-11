@@ -1,0 +1,28 @@
+﻿@model IEnumerable<_5shop.Models.ShoppingCart>
+@{
+    ViewBag.Title = "orderHistory";
+}
+
+<h2>Направени нарачки</h2>
+<br />
+<table class="table">
+    <thead>
+        <tr>
+            <th>Cart ID</th>
+            <th>Датум на креирање</th>
+            <th>Цена на нарачка</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var cart in Model)
+        {
+            <tr>
+                <td>@cart.id</td>
+                <td>@cart.dateCreated</td>
+                <td>@cart.total</td>
+                <td>@Html.ActionLink("Повеќе детали", "moreDetails", "ShoppingCarts", new { cartId = cart.id }, null) </td>
+            </tr>
+        }
+    </tbody>
+</table>

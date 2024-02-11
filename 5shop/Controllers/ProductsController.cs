@@ -19,12 +19,22 @@ namespace _5shop.Controllers
         // GET: Products
         public ActionResult Index(string categoryFilter, string animalFilter)
         {
-            // Fetch all products initially
             var products = db.products.ToList();
             var categories = (Category[])Enum.GetValues(typeof(Category));
             var animals = (Animal[])Enum.GetValues(typeof(Animal));
 
-            // Apply filters if provided
+            var cartId = 0;
+
+            if (User.Identity.IsAuthenticated)
+            {
+                var shoppingCart = db.shoppingCarts.FirstOrDefault(sc => sc.username == User.Identity.Name 
+                                                                    && sc.status == ShoppingCartStatus.CREATED );
+                if (shoppingCart != null)
+                {
+                    cartId = shoppingCart.id;
+                }
+            }
+
             if (!string.IsNullOrEmpty(categoryFilter))
             {
                 products = products.Where(p => p.category.ToString() == categoryFilter).ToList();
@@ -35,15 +45,13 @@ namespace _5shop.Controllers
                 products = products.Where(p => p.animal.ToString() == animalFilter).ToList();
             }
 
-            // Fetch the user's shopping cart ID
-            var userName = User.Identity.GetUserName(); // Assuming you are using ASP.NET Identity
 
-            // Create your view model and pass the userName
-            var model = new ProductsCategoriesAnimalsViewModel(userName)
+            var model = new ProductsCategoriesAnimalsViewModel
             {
                 animals = animals.ToList(),
                 categories = categories.ToList(),
-                products = products
+                products = products,
+                cartId = cartId
             };
 
             return View(model);
@@ -62,7 +70,18 @@ namespace _5shop.Controllers
             {
                 return HttpNotFound();
             }
-            return View(product);
+
+            var shoppingCart = db.shoppingCarts.FirstOrDefault(sc => sc.username == User.Identity.Name && sc.status == ShoppingCartStatus.CREATED);
+            var shoppingCartId = shoppingCart != null ? shoppingCart.id : 0;
+
+
+            var model = new DetailsAddToCartViewModel
+            {
+                product = product,
+                cartId = shoppingCartId
+            };
+
+            return View(model);
         }
 
         [Authorize(Roles = "ADMIN")]

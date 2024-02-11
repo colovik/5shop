@@ -3,7 +3,7 @@
 @{
     ViewBag.Title = "Index";
 }
-<p>Cart ID: @Model.cartId</p>
+@*<p>Cart ID: @Model.cartId</p>*@
 
 <div class="row">
     <div class="col-3 d-flex flex-column">
@@ -80,16 +80,16 @@
 
                     @if (User.IsInRole(_5shop.Models.Role.ADMIN.ToString()))
                     {
-                        @Html.Label("|")
-                        @Html.ActionLink("Промени", "Edit", new { id = item.id })
-                        @Html.Label("|")
-                        @Html.ActionLink("Избриши", "Delete", new { id = item.id })
+                        @Html.Label(" | ")
+                        @Html.ActionLink(" Промени", "Edit", new { id = item.id })
+                        @Html.Label(" | ")
+                        @Html.ActionLink(" Избриши", "Delete", new { id = item.id })
                     }
 
                     @if (User.IsInRole(_5shop.Models.Role.USER.ToString()))
                     {
-                        @Html.Label("|")
-                        @Html.ActionLink(" Додади во кошничка", "addToCart", "ShoppingCarts", new { cartId = Model.cartId, productName = item.name }, null)
+                        @Html.Label(" | ")
+                        <a class="btn-add" type="button" data-product-id="@item.id" data-quantity="@item.quantity" data-product-name="@item.name">Додади во кошничка</a>
                     }
                 </td>
             </tr>
@@ -107,5 +107,19 @@
         }
 
         $("#filterButton").on("click", filterProducts);
+
+
+        $('.btn-add').on('click', function () {
+            var quantity = $(this).data('quantity');
+            var productId = $(this).data('product-id');
+            var productName = $(this).data('product-name');
+
+            if (quantity == 0) {
+                alert('Моментално производот не е достапен на залиха');
+            } else {
+                window.location.href = "/ShoppingCarts/AddToCart?cartId=" + @Model.cartId+"&productName=" + productName;
+            }
+        });
+
     });
 </script>

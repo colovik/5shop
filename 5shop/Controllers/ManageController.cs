@@ -15,6 +15,7 @@ namespace _5shop.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private ApplicationDbContext db = new ApplicationDbContext();
 
         public ManageController()
         {

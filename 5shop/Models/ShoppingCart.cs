@@ -23,7 +23,6 @@ namespace _5shop.Models
         public ShoppingCart()
         {
             products = new List<Product>();
-            //prices = new List<int>();
             quantities = new List<int>();
             totalIndividuals = new List<int>();
             dateCreated = DateTime.Now;

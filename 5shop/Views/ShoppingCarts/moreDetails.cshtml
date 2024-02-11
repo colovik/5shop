@@ -1,0 +1,48 @@
+﻿@model _5shop.Models.moreDetailsViewModel
+@{
+    ViewBag.Title = "moreDetails";
+}
+
+<h2>Повеќе детали за нарачката</h2>
+<br />
+<table class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Производ</th>
+            <th>Цена</th>
+            <th>Количина</th>
+            <th>Вкупна цена на производот</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var i in Enumerable.Range(0, Model.products.Count))
+        {
+            <tr>
+                <td>
+                    <img src="@Model.products[i].imageUrl" alt="Product Image" class="img-thumbnail" style="width: 50px; height: 50px;" />
+                </td>
+                <td>@Model.products[i].name</td>
+                <td>@Model.products[i].price</td>
+                <td>@Model.products[i].quantity</td>
+                <td>@(Model.products[i].price * Model.products[i].quantity)</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="container-fluid">
+    <div class="row fs-5">
+        <div class="col-1">Вкупно:     </div>
+        <strong class="col-2 text-end">@Model.shoppingCart.total</strong>
+        <div class="col-9 text-start">мкд.</div>
+    </div>
+</div>
+
+<div>
+    <div class="form-group">
+        <button class="btn btn-outline-dark">
+            @Html.ActionLink("Назад кон сите нарачки", "orderHistory")
+        </button>
+    </div>
+</div>
