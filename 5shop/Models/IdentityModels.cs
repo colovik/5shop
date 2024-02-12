@@ -25,6 +25,7 @@ namespace _5shop.Models
 
         public DbSet<Product> products { get; set; }
         public DbSet<ShoppingCart> shoppingCarts { get; set; }
+        public DbSet<OrdersHistory> orders { get; set; }
 
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)

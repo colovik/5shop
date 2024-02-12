@@ -130,7 +130,7 @@ namespace _5shop.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "id,name,quantity,price,description,category,animal")] Product product)
+        public ActionResult Edit([Bind(Include = "id,name,quantity,price,description,imageUrl,category,animal")] Product product)
         {
             if (ModelState.IsValid)
             {

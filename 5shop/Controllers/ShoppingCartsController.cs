@@ -14,12 +14,14 @@ namespace _5shop.Controllers
     public class ShoppingCartsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+        [Authorize(Roles = "ADMIN")]
 
         // GET: ShoppingCarts
         public ActionResult Index()
         {
             return View(db.shoppingCarts.ToList());
         }
+        [Authorize(Roles = "ADMIN")]
 
         // GET: ShoppingCarts/Details/5
         public ActionResult Details(int? id)
@@ -35,6 +37,7 @@ namespace _5shop.Controllers
             }
             return View(shoppingCart);
         }
+        [Authorize(Roles = "ADMIN")]
 
         // GET: ShoppingCarts/Create
         public ActionResult Create()
@@ -58,6 +61,7 @@ namespace _5shop.Controllers
 
             return View(shoppingCart);
         }
+        [Authorize(Roles = "ADMIN")]
 
         // GET: ShoppingCarts/Edit/5
         public ActionResult Edit(int? id)
@@ -89,6 +93,7 @@ namespace _5shop.Controllers
             }
             return View(shoppingCart);
         }
+        [Authorize(Roles = "ADMIN")]
 
         // GET: ShoppingCarts/Delete/5
         public ActionResult Delete(int? id)
@@ -159,7 +164,10 @@ namespace _5shop.Controllers
                 if (product != null)
                 {
                     shoppingCart.products.Add(product);
+                    shoppingCart.quantities.Add(1);
+                    shoppingCart.totalIndividuals.Add(product.price * 1);
                     db.SaveChanges();
+
                 }
             }
             Session["User"] = user;
@@ -187,7 +195,7 @@ namespace _5shop.Controllers
                         var quantity = quantities[i];
                         var t = totalIndividuals[i];
 
-                        //shoppingCart.products.Add(product);
+                        shoppingCart.products.Add(product);
                         shoppingCart.quantities.Add(quantity);
                         shoppingCart.totalIndividuals.Add(t);
 
@@ -200,13 +208,25 @@ namespace _5shop.Controllers
                 shoppingCart.total = totalSum;
                 shoppingCart.status = ShoppingCartStatus.FINISHED;
                 shoppingCart.dateCreated = DateTime.Now;
-                
                 db.SaveChanges();
+
+                var userFinishedCarts = db.shoppingCarts.Where(sc => sc.username == User.Identity.Name && sc.status == ShoppingCartStatus.FINISHED).ToList();
+
+                var model = new OrdersHistory
+                {
+                    finishedCarts = userFinishedCarts,
+                    username = User.Identity.Name
+                };
+
+                db.orders.Add(model);
+                db.SaveChanges();
+
                 Session["ShoppingCart"] = null;
             }
 
             return RedirectToAction("addToCart");
         }
+
 
         [HttpPost]
         public ActionResult removeProduct(int productId)
@@ -231,15 +251,19 @@ namespace _5shop.Controllers
         public ActionResult orderHistory()
         {
             var activeUser = User.Identity.Name;
-            var userCarts = db.shoppingCarts.Include(sc => sc.products).Where(sc=> sc.username == activeUser && sc.status == ShoppingCartStatus.FINISHED).ToList();
-
-            return View(userCarts);
+            var activeUserFinishedCarts = db.shoppingCarts.Include(sc => sc.products)
+                                                            .Where(sc => sc.username == activeUser && sc.status == ShoppingCartStatus.FINISHED);
+            return View(activeUserFinishedCarts);
         }
 
         public ActionResult moreDetails(int cartId)
         {
-            var cart = db.shoppingCarts.Include(sc => sc.products).FirstOrDefault(sc => sc.id == cartId);
-            var products = db.shoppingCarts.FirstOrDefault(sc=>sc.id==cartId).products;
+            var cart = db.shoppingCarts.Include(sc => sc.products)
+                                        .FirstOrDefault(sc => sc.id == cartId);
+
+
+            var products = db.shoppingCarts.FirstOrDefault(sc => sc.id == cartId).products;
+
             var model = new MoreDetailsViewModel
             {
                 shoppingCart = cart,

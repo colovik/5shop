@@ -220,6 +220,10 @@
     <Compile Include="Migrations\202402111855076_addedOrderHistoryModel.designer.cs">
       <DependentUpon>202402111855076_addedOrderHistoryModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202402120024319_updatedShoppingCartModel.cs" />
+    <Compile Include="Migrations\202402120024319_updatedShoppingCartModel.designer.cs">
+      <DependentUpon>202402120024319_updatedShoppingCartModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AddToRoleViewModel.cs" />
@@ -393,6 +397,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202402111855076_addedOrderHistoryModel.resx">
       <DependentUpon>202402111855076_addedOrderHistoryModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202402120024319_updatedShoppingCartModel.resx">
+      <DependentUpon>202402120024319_updatedShoppingCartModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

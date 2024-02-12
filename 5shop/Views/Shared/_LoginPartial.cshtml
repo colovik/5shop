@@ -13,9 +13,17 @@
                     @Html.ActionLink("Кошничка", "addToCart", "ShoppingCarts", new { area = "" }, new { @class = "nav-link" })
                 }
             </li>
-        <li>
-            @Html.ActionLink(User.Identity.GetUserName(), "orderHistory", "ShoppingCarts", new {}, htmlAttributes: new { title = "Manage", @class = "nav-link" })
-        </li>
+            <li>
+                @if (User.IsInRole(_5shop.Models.Role.ADMIN.ToString()))
+                {
+                    @Html.ActionLink(User.Identity.GetUserName(), "Index", "Manage", new { }, htmlAttributes: new { title = "Manage", @class = "nav-link" });
+
+                }
+                @if (User.IsInRole(_5shop.Models.Role.USER.ToString()))
+                {
+                    @Html.ActionLink(User.Identity.GetUserName(), "orderHistory", "ShoppingCarts", new { }, htmlAttributes: new { title = "Manage", @class = "nav-link" })
+                }
+            </li>
             <li><a class="nav-link" href="javascript:document.getElementById('logoutForm').submit()">Одјави се</a></li>
         </ul>
     }

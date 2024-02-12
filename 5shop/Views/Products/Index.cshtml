@@ -89,7 +89,7 @@
                     @if (User.IsInRole(_5shop.Models.Role.USER.ToString()))
                     {
                         @Html.Label(" | ")
-                        <a class="btn-add" type="button" data-product-id="@item.id" data-quantity="@item.quantity" data-product-name="@item.name">Додади во кошничка</a>
+                        <a class="btn-add" data-product-id="@item.id" data-quantity="@item.quantity" data-product-name="@item.name">Додади во кошничка</a>
                     }
                 </td>
             </tr>
@@ -117,7 +117,7 @@
             if (quantity == 0) {
                 alert('Моментално производот не е достапен на залиха');
             } else {
-                window.location.href = "/ShoppingCarts/AddToCart?cartId=" + @Model.cartId+"&productName=" + productName;
+                window.location.href = "/ShoppingCarts/addToCart?cartId=" + @Model.cartId+"&productName=" + productName;
             }
         });
 

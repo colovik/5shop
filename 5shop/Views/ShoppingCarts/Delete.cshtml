@@ -4,11 +4,10 @@
     ViewBag.Title = "Delete";
 }
 
-<h2>Delete</h2>
+<h3>Дали сигурно сакаш да го избришеш овој производ?</h3>
 
-<h3>Are you sure you want to delete this?</h3>
 <div>
-    <h4>ShoppingCart</h4>
+    <h4>@*ShoppingCart*@</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -37,12 +36,15 @@
 
     </dl>
 
-    @using (Html.BeginForm()) {
+    @using (Html.BeginForm())
+    {
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
+            <input type="submit" value="Избриши" class="btn btn-danger" />
+            <button class="btn btn-outline-dark">
+                @Html.ActionLink("Назад кон листата", "Index", new { @class = "color: black;" })
+            </button>
         </div>
     }
 </div>

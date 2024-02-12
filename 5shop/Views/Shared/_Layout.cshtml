@@ -27,6 +27,7 @@
                     @if (User.IsInRole(_5shop.Models.Role.ADMIN.ToString()))
                     {
                         <li>@Html.ActionLink("Додади улога", "addUserToRole", "Account", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li>@Html.ActionLink("Нарачки", "Index", "ShoppingCarts", new { area = "" }, new { @class = "nav-link" })</li>
                     }
                 </ul>
 

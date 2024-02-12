@@ -4,13 +4,12 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2>Сите нарачки</h2>
+<br />
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
 <table class="table">
     <tr>
+        <th>Cart ID</th>
         <th>
             @Html.DisplayNameFor(model => model.username)
         </th>
@@ -23,23 +22,27 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.username)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.total)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.dateCreated)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.id })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.username)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.total)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.dateCreated)
+            </td>
+            <td>
+                @Html.ActionLink("Промени", "Edit", new { id = item.id }) |
+                @Html.ActionLink("Детали", "Details", new { id = item.id }) |
+                @Html.ActionLink("Избриши", "Delete", new { id = item.id })
+            </td>
+        </tr>
+    }
 
 </table>

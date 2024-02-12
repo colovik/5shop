@@ -1,4 +1,4 @@
-﻿@model _5shop.Models.moreDetailsViewModel
+﻿@model _5shop.Models.MoreDetailsViewModel
 @{
     ViewBag.Title = "moreDetails";
 }
@@ -9,10 +9,7 @@
     <thead>
         <tr>
             <th></th>
-            <th>Производ</th>
-            <th>Цена</th>
-            <th>Количина</th>
-            <th>Вкупна цена на производот</th>
+            <th>Производи</th>
         </tr>
     </thead>
     <tbody>
@@ -20,12 +17,9 @@
         {
             <tr>
                 <td>
-                    <img src="@Model.products[i].imageUrl" alt="Product Image" class="img-thumbnail" style="width: 50px; height: 50px;" />
+                    <img src="@Model.products[i].imageUrl" alt="Product Image" class="img-thumbnail" style="width: 100px; height: 100px;" />
                 </td>
-                <td>@Model.products[i].name</td>
-                <td>@Model.products[i].price</td>
-                <td>@Model.products[i].quantity</td>
-                <td>@(Model.products[i].price * Model.products[i].quantity)</td>
+                <td>@Model.products[i].name</td>              
             </tr>
         }
     </tbody>
@@ -33,9 +27,9 @@
 
 <div class="container-fluid">
     <div class="row fs-5">
-        <div class="col-1">Вкупно:     </div>
-        <strong class="col-2 text-end">@Model.shoppingCart.total</strong>
-        <div class="col-9 text-start">мкд.</div>
+        <div class="col-3">Цена на нарачката:     </div>
+        <strong class="col-2 text-end fs-4">@Model.shoppingCart.total</strong>
+        <div class="col-7 text-start">мкд.</div>
     </div>
 </div>
 
